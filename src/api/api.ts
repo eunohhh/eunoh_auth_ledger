@@ -1,7 +1,7 @@
 import axios from "axios";
 import AuthAPI from "./api.auth";
 
-const BASE_URL = "https://api.ballang.yoojinyoung.com";
+const BASE_URL = " https://moneyfulpublicpolicy.co.kr";
 
 class API {
     private axios;
@@ -10,7 +10,6 @@ class API {
     constructor() {
         this.axios = axios.create({
             baseURL: BASE_URL,
-            withCredentials: true,
         });
 
         this.auth = new AuthAPI(this.axios);
