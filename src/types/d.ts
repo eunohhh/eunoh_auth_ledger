@@ -1,6 +1,6 @@
 export interface AuthData {
-    id: string;
-    password: string;
+    id?: string;
+    password?: string;
     nickname?: string;
     avatar?: File;
 }

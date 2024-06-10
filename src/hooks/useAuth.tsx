@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 
 interface ChangeProfileParams {
-    accessToken: string;
+    accessToken: string | null;
     data: AuthData;
 }
 
