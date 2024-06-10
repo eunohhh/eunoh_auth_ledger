@@ -4,6 +4,12 @@ export interface AuthData {
     nickname?: string;
 }
 
+export interface User {
+    userId: string;
+    avatar: string | null;
+    nickname: string;
+}
+
 export interface AuthState {
     user: {
         userId: string;
@@ -11,10 +17,6 @@ export interface AuthState {
         nickname: string;
     } | null;
     isLoggedIn: boolean;
-    setUser: (user: {
-        userId: string;
-        avatar: string | null;
-        nickname: string;
-    }) => void;
+    setUser: (user: User) => void;
     setLoggedIn: (isLoggedIn: boolean) => void;
 }

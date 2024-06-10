@@ -49,7 +49,24 @@ class AuthAPI {
             throw new Error("An unexpected error occurred");
         }
     }
-    async getUser() {}
+    async getUser(accessToken: string | null) {
+        const path = "/user";
+        this.axios.defaults.headers.common.Authorization = accessToken
+            ? `Bearer ${accessToken}`
+            : "";
+
+        try {
+            const response = await this.axios.get(path);
+            const result = response.data;
+
+            return result;
+        } catch (error: unknown) {
+            if (error instanceof AxiosError) {
+                throw new Error(error.response?.data.message || error.message);
+            }
+            throw new Error("An unexpected error occurred");
+        }
+    }
 }
 
 export default AuthAPI;
