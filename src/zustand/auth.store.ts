@@ -6,4 +6,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     isLoggedIn: false,
     setUser: (user) => set({ user }),
     setLoggedIn: (isLoggedIn) => set({ isLoggedIn }),
+    logOut: () => {
+        localStorage.removeItem("accessToken");
+        set({ user: null, isLoggedIn: false });
+    },
 }));

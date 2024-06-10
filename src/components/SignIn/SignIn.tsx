@@ -1,5 +1,5 @@
 import useAuth from "@/hooks/useAuth";
-import { ChangeEvent, useId, useState } from "react";
+import { ChangeEvent, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function SignIn() {
@@ -7,7 +7,7 @@ function SignIn() {
     const idId = useId();
     const passwordId = useId();
 
-    const { logIn } = useAuth();
+    const { isLoggedIn, logIn } = useAuth();
 
     const [input, setInput] = useState({
         id: "",
@@ -49,6 +49,12 @@ function SignIn() {
     const handleSignUpClick = () => {
         navigate("/sign-up");
     };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate("/ledger");
+        }
+    }, [isLoggedIn, navigate]);
 
     return (
         <div className="grid grid-cols-1 gap-y-6">

@@ -7,10 +7,12 @@ class AuthAPI {
     private api: API;
     private token: string | null;
 
-    constructor(axios: Axios, api: API, token: string | null) {
+    constructor(axios: Axios, api: API) {
+        const accessToken: string | null = localStorage.getItem("accessToken");
+
         this.axios = axios;
         this.api = api;
-        this.token = token;
+        this.token = accessToken;
     }
 
     async signUp(data: AuthData): Promise<AxiosReturn> {
@@ -29,7 +31,7 @@ class AuthAPI {
         }
     }
     async logIn(data: AuthData): Promise<AxiosReturn> {
-        const path = "/login";
+        const path = "/login?expiresIn=30m";
 
         try {
             const response: AxiosResponse<AxiosReturn> =
@@ -52,7 +54,9 @@ class AuthAPI {
             throw new Error("An unexpected error occurred");
         }
     }
-    async getUser(accessToken: string | null = null): Promise<AxiosReturn> {
+    async getUser(
+        accessToken: string | null = null
+    ): Promise<AxiosReturn | null> {
         const path = "/user";
         this.axios.defaults.headers.common.Authorization = accessToken
             ? `Bearer ${accessToken}`
@@ -68,7 +72,16 @@ class AuthAPI {
             return result;
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                throw new Error(error.response?.data.message || error.message);
+                if (
+                    error.response?.data.message ===
+                    "토큰이 만료되었습니다. 다시 로그인 해주세요."
+                ) {
+                    console.log(error.response?.data.message);
+                } else {
+                    throw new Error(
+                        error.response?.data.message || error.message
+                    );
+                }
             }
             throw new Error("An unexpected error occurred");
         }

@@ -21,12 +21,9 @@ export interface AxiosReturn {
 }
 
 export interface AuthState {
-    user: {
-        userId: string;
-        avatar: string | null;
-        nickname: string;
-    } | null;
+    user: User | null;
     isLoggedIn: boolean;
     setUser: (user: User) => void;
     setLoggedIn: (isLoggedIn: boolean) => void;
+    logOut: () => void;
 }

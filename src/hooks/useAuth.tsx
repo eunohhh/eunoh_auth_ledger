@@ -10,10 +10,11 @@ interface ChangeProfileParams {
 }
 
 function useAuth() {
-    const { user, isLoggedIn } = useAuthStore(
+    const { user, isLoggedIn, logOut } = useAuthStore(
         useShallow((state) => ({
             user: state.user,
             isLoggedIn: state.isLoggedIn,
+            logOut: state.logOut,
         }))
     );
 
@@ -26,14 +27,15 @@ function useAuth() {
     });
 
     const { mutateAsync: getUser } = useMutation({
-        mutationFn: (accessToken: string) => api.auth.getUser(accessToken),
+        mutationFn: (accessToken: string | null) =>
+            api.auth.getUser(accessToken),
     });
     const { mutateAsync: changeProfile } = useMutation({
         mutationFn: ({ accessToken, data }: ChangeProfileParams) =>
             api.auth.changeProfile(accessToken, data),
     });
 
-    return { user, isLoggedIn, signUp, logIn, getUser, changeProfile };
+    return { user, isLoggedIn, signUp, logIn, getUser, changeProfile, logOut };
 }
 
 export default useAuth;
