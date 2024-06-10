@@ -13,6 +13,7 @@
     "dependencies": {
         "@tanstack/react-query": "^5.40.1",
         "@tanstack/react-query-devtools": "^5.40.1",
+        "@types/uuid": "^9.0.8",
         "axios": "^1.7.2",
         "immer": "^10.1.1",
         "react": "^18.2.0",
@@ -20,6 +21,7 @@
         "react-router-dom": "^6.23.1",
         "styled-components": "^6.1.11",
         "styled-reset": "^4.5.2",
+        "uuid": "^10.0.0",
         "zustand": "^4.5.2"
     },
     "devDependencies": {
