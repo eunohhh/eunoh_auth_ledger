@@ -1,10 +1,12 @@
+import useAuth from "@/hooks/useAuth";
 import useLedger from "@/hooks/useLedger";
 import { v4 as uuidv4 } from "uuid";
 import isValidDate from "../../utils/isValidDate";
 import Input from "./Input";
 
 function Form() {
-    const { expends, addExpend } = useLedger();
+    const { user } = useAuth();
+    const { addExpend } = useLedger();
     // 폼 서브밋 핸들러
     // 인풋핸들러에서 설정된 가계부 객체를 전체 가계부 배열에 추가
     // 여기서는 비제어 컴포넌트를 사용
@@ -20,7 +22,8 @@ function Form() {
 
         const amountNumber = Number(amount);
 
-        if (!date || !item || !amount || !description) return;
+        if (!date || !item || !amount || !description || !user || !addExpend)
+            return;
 
         if (
             !date?.trim() ||
@@ -48,19 +51,19 @@ function Form() {
             item,
             amount: Number(amount),
             description,
+            created_by: user.nickname,
         };
 
-        if (!expends) return;
+        try {
+            const result = await addExpend(newExpend);
 
-        const newExpends = [...expends, newExpend];
-        // dispatch(addToDo(newTodo));
+            console.log(result);
 
-        const result = await addExpend(newExpends);
-
-        console.log(result);
-
-        // 추가하고 나면 폼 리셋 시키기!!
-        form.reset();
+            // 추가하고 나면 폼 리셋 시키기!!
+            form.reset();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

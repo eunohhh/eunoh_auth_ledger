@@ -37,16 +37,17 @@ export interface Expend {
     amount: number;
     description: string;
     day?: number;
+    created_by: string;
 }
 
 export interface Ledger {
-    expendsLoading: boolean;
+    expendsLoading?: boolean;
     expends: Expend[] | null;
     month: number;
     monthlyExpends: Expend[] | null;
-    // setExpends: (expends: Expend[]) => void;
+    setExpends?: (expends: Expend[]) => void;
     selectMonth: (selectedMonth: number) => void;
-    addExpend: UseMutateAsyncFunction<LedgerState, Error, Expend[], unknown>;
+    addExpend?: UseMutateAsyncFunction<LedgerState, Error, Expend, unknown>;
     deleteExpend: (expendId: string) => void;
     updateExpend: (newExpend: Expend) => void;
 }

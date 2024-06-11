@@ -24,7 +24,7 @@ class LedgerAPI {
         }
     }
 
-    async addLeger(newExpend: Expend[]): Promise<LedgerState> {
+    async addLeger(newExpend: Expend): Promise<LedgerState> {
         try {
             const path = "/expenses";
 
@@ -45,7 +45,7 @@ class LedgerAPI {
 
     async updateLeger(newExpend: Expend): Promise<LedgerState> {
         try {
-            const path = "/expenses";
+            const path = `/expenses/${newExpend.id}`;
 
             const response = await this.axios.patch<LedgerState>(
                 path,

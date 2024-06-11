@@ -1,11 +1,12 @@
 import api from "@/api/api";
 import { Expend, Ledger } from "@/types/d";
 import { useLedgerStore } from "@/zustand/ledger.store";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 function useLedger(): Ledger {
+    const queryClient = useQueryClient();
     const { month, selectMonth } = useLedgerStore(
         useShallow((state) => ({
             month: state.month,
@@ -13,20 +14,29 @@ function useLedger(): Ledger {
         }))
     );
 
+    const { data: expends = [], isLoading: expendsLoading } = useQuery({
+        queryKey: ["ledger"],
+        queryFn: () => api.ledger.getLedger(),
+    });
+
     const { mutateAsync: addExpend } = useMutation({
-        mutationFn: (newExpends: Expend[]) => api.ledger.addLeger(newExpends),
+        mutationFn: (newExpend: Expend) => api.ledger.addLeger(newExpend),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["ledger"] });
+        },
     });
 
     const { mutateAsync: updateExpend } = useMutation({
         mutationFn: (newExpends: Expend) => api.ledger.updateLeger(newExpends),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["ledger"] });
+        },
     });
     const { mutateAsync: deleteExpend } = useMutation({
         mutationFn: (expendId: string) => api.ledger.deleteLeger(expendId),
-    });
-
-    const { data: expends = [], isLoading: expendsLoading } = useQuery({
-        queryKey: ["ledger"],
-        queryFn: () => api.ledger.getLedger(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["ledger"] });
+        },
     });
 
     const monthlyExpends = useMemo<Expend[]>(() => {

@@ -19,7 +19,7 @@ export const useLedgerStore = create<Ledger>((set) => ({
             month: selectedMonth,
         }));
     },
-    addExpend: (newExpend: Expend) =>
+    setExpend: (newExpend: Expend) =>
         set(
             produce((state: Ledger) => {
                 if (state.expends) {

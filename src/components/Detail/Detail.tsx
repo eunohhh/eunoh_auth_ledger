@@ -1,83 +1,13 @@
+import useAuth from "@/hooks/useAuth";
 import useLedger from "@/hooks/useLedger";
 import isValidDate from "@/utils/isValidDate";
 import { ChangeEvent, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import inputs from "../../data/inputs";
 import { Expend } from "../../types/d";
 
-const StyledDiv = styled.div`
-    max-width: 800px;
-    width: 100%;
-    margin: 0px auto;
-    padding: 20px;
-    background-color: rgb(255, 255, 255);
-    border-radius: 16px;
-`;
-
-const StyledInnerDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-
-    & > label {
-        margin-bottom: 5px;
-        font-size: 14px;
-        color: rgb(51, 51, 51);
-        text-align: left;
-    }
-
-    input {
-        padding: 10px;
-        border: 1px solid rgb(221, 221, 221);
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    select {
-        padding: 10px;
-        border: 1px solid rgb(221, 221, 221);
-        border-radius: 4px;
-        font-size: 14px;
-    }
-`;
-
-const StyledButtonDiv = styled.div`
-    display: flex;
-    gap: 10px;
-
-    & > button:nth-child(1) {
-        padding: 10px 20px;
-        background-color: rgb(0, 123, 255);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out 0s;
-    }
-
-    button:nth-child(2) {
-        padding: 10px 20px;
-        background-color: rgb(255, 77, 77);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out 0s;
-    }
-
-    button:nth-child(3) {
-        padding: 10px 20px;
-        background-color: rgb(108, 117, 125);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out 0s;
-    }
-`;
-
 function Detail() {
+    const { user } = useAuth();
     const { deleteExpend, updateExpend } = useLedger();
     // navigate 는 수정 삭제 돌아가기 시 홈으로 돌려보내기 위해
     // location 은 List 에서 쏴준 데이터 받기 위해
@@ -92,6 +22,7 @@ function Detail() {
     const inputRef = useRef<(HTMLInputElement | HTMLSelectElement)[]>([]);
 
     const handleUpdateClick = async () => {
+        if (!user) return;
         // useRef 를 사용하도록 수정
         const date = inputRef.current[0].value;
         const day = parseInt(date.split("-")[1], 10);
@@ -106,6 +37,7 @@ function Detail() {
             amount,
             description,
             day,
+            created_by: user.nickname,
         };
 
         if (!date || !item || !amount || !description) return;
@@ -130,10 +62,13 @@ function Detail() {
             return;
         }
 
-        const result = await updateExpend(newExpend);
-
-        console.log(result);
-        navigate("/");
+        try {
+            const result = await updateExpend(newExpend);
+            console.log(result);
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleDeleteClick = async () => {
@@ -161,12 +96,18 @@ function Detail() {
     };
 
     return (
-        <StyledDiv>
+        <div className="max-w-screen-md	mx-auto my-0 p-5 rounded-sm">
             {inputs.map((input, idx) => (
-                <StyledInnerDiv key={idx}>
-                    <label htmlFor={input.name}>{input.label}</label>
+                <div className="flex flex-col mb-3" key={idx}>
+                    <label
+                        className="mb-1 text-sm text-gray-500 text-left"
+                        htmlFor={input.name}
+                    >
+                        {input.label}
+                    </label>
                     {input.type === "select" ? (
                         <select
+                            className="p-2.5 border-solid border-slate-200 border-2 rounded-sm text-sm"
                             name={input.name}
                             ref={(ele) => ele && inputRef.current.push(ele)}
                         >
@@ -203,6 +144,7 @@ function Detail() {
                         </select>
                     ) : (
                         <input
+                            className="p-2.5 border-solid border-slate-200 border-2 rounded-sm text-sm"
                             onChange={handleChange}
                             type="text"
                             name={input.name}
@@ -212,14 +154,29 @@ function Detail() {
                             ref={(ele) => ele && inputRef.current.push(ele)}
                         ></input>
                     )}
-                </StyledInnerDiv>
+                </div>
             ))}
-            <StyledButtonDiv>
-                <button onClick={handleUpdateClick}>수정</button>
-                <button onClick={handleDeleteClick}>삭제</button>
-                <button onClick={() => navigate("/")}>뒤로 가기</button>
-            </StyledButtonDiv>
-        </StyledDiv>
+            <div className="flex gap-4">
+                <button
+                    className="py-2 px-4 bg-blue-700 text-center text-white rounded-sm transition hover:bg-blue-600"
+                    onClick={handleUpdateClick}
+                >
+                    수정
+                </button>
+                <button
+                    className="py-2 px-4 bg-red-600 text-center text-white rounded-sm transition hover:bg-red-500"
+                    onClick={handleDeleteClick}
+                >
+                    삭제
+                </button>
+                <button
+                    className="py-2 px-4 bg-gray-400 text-center text-white rounded-sm transition hover:bg-gray-500"
+                    onClick={() => navigate("/")}
+                >
+                    뒤로 가기
+                </button>
+            </div>
+        </div>
     );
 }
 
