@@ -1,6 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import { ChangeEvent, useEffect, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function SignIn() {
     const navigate = useNavigate();
@@ -37,12 +38,19 @@ function SignIn() {
         try {
             const result = await logIn(data);
             if (result.success) {
-                alert(`${result.userId}님 환영합니다`);
+                Swal.fire({
+                    title: "로그인 성공",
+                    text: `${result.userId}님 환영합니다`,
+                    icon: "success",
+                });
                 navigate("/ledger");
             }
         } catch (error) {
-            console.log(error);
-            alert(error);
+            Swal.fire({
+                title: "로그인 에러",
+                text: `에러가 발생했습니다! ${error}`,
+                icon: "error",
+            });
         }
     };
 

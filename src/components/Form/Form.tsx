@@ -1,5 +1,6 @@
 import useAuth from "@/hooks/useAuth";
 import useLedger from "@/hooks/useLedger";
+import Swal from "sweetalert2";
 import { v4 as uuidv4 } from "uuid";
 import isValidDate from "../../utils/isValidDate";
 import Input from "./Input";
@@ -31,17 +32,29 @@ function Form() {
             !amount?.toString().trim() ||
             !description?.trim()
         ) {
-            alert("내용을 입력해 주세요!");
+            Swal.fire({
+                title: "에러",
+                text: "내용을 입력해 주세요!",
+                icon: "error",
+            });
             return;
         }
 
         if (!isValidDate(date)) {
-            alert("날짜 유효한지 확인해 주세요!");
+            Swal.fire({
+                title: "에러",
+                text: "날짜 유효한지 확인해 주세요!",
+                icon: "error",
+            });
             return;
         }
 
         if (isNaN(amountNumber) || amountNumber < 0) {
-            alert("왜 그런 금액 입력하는 것임??");
+            Swal.fire({
+                title: "에러",
+                text: "왜 그런 금액 입력하는 것임??",
+                icon: "error",
+            });
             return;
         }
 
@@ -59,17 +72,28 @@ function Form() {
 
             console.log(result);
 
+            Swal.fire({
+                title: "성공",
+                text: "등록 완료!",
+                icon: "success",
+            });
+
             // 추가하고 나면 폼 리셋 시키기!!
             form.reset();
         } catch (error) {
             console.log(error);
+            Swal.fire({
+                title: "실패",
+                text: "알수 없는 에러가 발생했습니다",
+                icon: "error",
+            });
         }
     };
 
     return (
         <section className="w-full flex justify-center items-center h-20 bg-white text-neutral-900 box-border p-3">
             <form
-                className="w-full h-full flex flex-row justify-between"
+                className="w-full h-full flex flex-row justify-between gap-4"
                 onSubmit={handleSubmit}
             >
                 <Input />

@@ -11,7 +11,7 @@ function DefaultLayout() {
 
             <main
                 id="default-layout"
-                className="h-full grid place-items-center max-w-screen-lg mx-auto my-0"
+                className="h-full min-h-[90dvh] grid place-items-center max-w-screen-lg mx-auto my-0 place-content-center"
             >
                 <Outlet />
             </main>

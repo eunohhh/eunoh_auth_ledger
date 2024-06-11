@@ -1,6 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import { ChangeEvent, useId, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function SignUp() {
     const navigate = useNavigate();
@@ -23,7 +24,11 @@ function SignUp() {
         const value = e.target.value;
 
         if (/\s/.test(value)) {
-            alert("공백을 포함할 수 없습니다.");
+            return Swal.fire({
+                title: "에러",
+                text: "공백을 포함할 수 없습니다!",
+                icon: "error",
+            });
             return; // 공백이 포함된 경우 상태 업데이트 안함
         }
 
@@ -50,18 +55,40 @@ function SignUp() {
             !input.passwordConfirm ||
             !input.nickName
         )
-            return alert("빈 값이 없도록 해주세요");
+            return Swal.fire({
+                title: "에러",
+                text: "빈 값이 없도록 해주세요",
+                icon: "error",
+            });
 
-        if (input.id.length < 4 || input.id.length > 10)
-            return alert("아이디는 4~10 글자로 해야합니다!");
-        if (input.password.length < 4 || input.password.length > 15)
-            return alert("비밀번호는 4~15 글자로 해야합니다!");
-        if (input.nickName.length < 1 || input.nickName.length > 10)
-            return alert("닉네임은 1~10 글자로 해야합니다!");
-
-        if (input.password !== input.passwordConfirm)
-            return alert("비밀번호가 일치하지 않습니다.");
-
+        if (input.id.length < 4 || input.id.length > 10) {
+            return Swal.fire({
+                title: "에러",
+                text: "아이디는 4~10 글자로 해야합니다!",
+                icon: "error",
+            });
+        }
+        if (input.password.length < 4 || input.password.length > 15) {
+            return Swal.fire({
+                title: "에러",
+                text: "비밀번호는 4~15 글자로 해야합니다!",
+                icon: "error",
+            });
+        }
+        if (input.nickName.length < 1 || input.nickName.length > 10) {
+            return Swal.fire({
+                title: "에러",
+                text: "닉네임은 1~10 글자로 해야합니다!",
+                icon: "error",
+            });
+        }
+        if (input.password !== input.passwordConfirm) {
+            return Swal.fire({
+                title: "에러",
+                text: "비밀번호가 일치하지 않습니다.",
+                icon: "error",
+            });
+        }
         const data = {
             id: input.id,
             password: input.password,
@@ -70,12 +97,19 @@ function SignUp() {
 
         try {
             await signUp(data);
-
-            alert("회원가입 완료");
+            Swal.fire({
+                title: "성공",
+                text: "회원가입 완료",
+                icon: "success",
+            });
             navigate("/");
         } catch (error) {
             console.log(error);
-            alert(error);
+            Swal.fire({
+                title: "에러",
+                text: `${error}`,
+                icon: "error",
+            });
         }
     };
 

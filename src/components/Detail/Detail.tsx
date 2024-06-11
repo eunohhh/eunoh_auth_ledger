@@ -3,6 +3,7 @@ import useLedger from "@/hooks/useLedger";
 import isValidDate from "@/utils/isValidDate";
 import { ChangeEvent, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import inputs from "../../data/inputs";
 import { Expend } from "../../types/d";
 
@@ -48,36 +49,83 @@ function Detail() {
             !amount?.toString().trim() ||
             !description?.trim()
         ) {
-            alert("내용을 입력해 주세요!");
+            Swal.fire({
+                title: "에러",
+                text: "내용을 입력해 주세요!",
+                icon: "error",
+            });
             return;
         }
 
         if (!isValidDate(date)) {
-            alert("날짜 유효한지 확인해 주세요!");
+            Swal.fire({
+                title: "에러",
+                text: "날짜 유효한지 확인해 주세요!",
+                icon: "error",
+            });
             return;
         }
 
         if (isNaN(amount) || amount < 0) {
-            alert("왜 그런 금액 입력하는 것임??");
+            Swal.fire({
+                title: "에러",
+                text: "왜 그런 금액 입력하는 것임??",
+                icon: "error",
+            });
             return;
         }
 
         try {
-            const result = await updateExpend(newExpend);
-            console.log(result);
-            navigate("/");
+            Swal.fire({
+                title: "정말 수정하실 겁니까?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "네",
+                denyButtonText: "아니오",
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const result = await updateExpend(newExpend);
+                    console.log(result);
+                    Swal.fire({
+                        title: "성공",
+                        text: "업데이트 완료!",
+                        icon: "success",
+                    });
+                    navigate("/");
+                } else if (result.isDenied) {
+                    Swal.fire("다시 진행해 주세요");
+                }
+            });
         } catch (error) {
             console.log(error);
+            Swal.fire({
+                title: "실패",
+                text: "알수 없는 에러가 발생했습니다",
+                icon: "error",
+            });
         }
     };
 
     const handleDeleteClick = async () => {
-        if (confirm("정말 삭제하실 겁니까?")) {
-            await deleteExpend(expend.id);
-            navigate("/");
-        } else {
-            return;
-        }
+        Swal.fire({
+            title: "정말 삭제하실 겁니까?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "네",
+            denyButtonText: "아니오",
+        }).then(async (result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                await deleteExpend(expend.id);
+                Swal.fire({
+                    title: "삭제 성공",
+                    icon: "success",
+                });
+                navigate("/");
+            } else if (result.isDenied) {
+                Swal.fire("다시 진행해 주세요");
+            }
+        });
     };
 
     // 제어 컴포넌트를 위해 onChange 시 값 바꿔줌

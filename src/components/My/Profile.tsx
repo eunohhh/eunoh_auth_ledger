@@ -1,6 +1,7 @@
 import useAuth from "@/hooks/useAuth";
 import { useEffect, useId, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Profile() {
     const navigate = useNavigate();
@@ -43,8 +44,22 @@ function Profile() {
         const formData = new FormData(form);
         const nickName = formData.get("nickname")?.toString();
 
-        if (!imgFile) return alert("변경할 이미지를 선택해 주세요");
-        if (!nickName) return alert("변경할 닉네임을 입력해 주세요");
+        if (!imgFile) {
+            Swal.fire({
+                title: "이미지",
+                text: "변경할 이미지를 선택해 주세요",
+                icon: "error",
+            });
+            return;
+        }
+        if (!nickName) {
+            Swal.fire({
+                title: "닉네임",
+                text: "변경할 닉네임을 입력해 주세요",
+                icon: "error",
+            });
+            return;
+        }
 
         const data = {
             accessToken: localStorage.getItem("accessToken"),
@@ -52,12 +67,26 @@ function Profile() {
         };
 
         try {
-            const yes = confirm("이대로 변경하시겠습니까?");
-            if (!yes) return;
-
-            const result = await changeProfile(data);
-            console.log(result);
-            if (result) return alert(result.message);
+            Swal.fire({
+                title: "이대로 변경하시겠습니까?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "네",
+                denyButtonText: "아니오",
+            }).then(async (result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    const result = await changeProfile(data);
+                    console.log(result);
+                    Swal.fire({
+                        title: "변경 성공",
+                        text: `${result.message}`,
+                        icon: "success",
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire("다시 진행해 주세요");
+                }
+            });
         } catch (error) {
             console.log(error);
         }
@@ -73,7 +102,7 @@ function Profile() {
     }, [imgFile]);
 
     return (
-        <section>
+        <section className="w-full flex justify-center items-center">
             <form onSubmit={handleFormSubmit} className="flex flex-row gap-4">
                 <div className="flex flex-col gap-3">
                     <div className="w-28 h-28 rounded-full overflow-hidden">
