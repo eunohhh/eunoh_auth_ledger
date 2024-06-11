@@ -1,75 +1,13 @@
 import useLedger from "@/hooks/useLedger";
-import styled from "styled-components";
+import clsx from "clsx";
 
-const BLUE = `rgb(0, 123, 255)`;
-const GREEN = `rgb(40, 167, 69)`;
-const RED = `rgb(220, 53, 69)`;
-const YELLOW = `rgb(255, 193, 7)`;
-const AQUA = `rgb(23, 162, 184)`;
-
-const StyledSection = styled.section`
-    box-sizing: border-box;
-    padding: 20px;
-    width: 100%;
-    background-color: rgb(255, 255, 255);
-    border-radius: 16px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-`;
-
-const StyledGraphBoxDiv = styled.div`
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-    height: 40px;
-    background-color: rgb(233, 236, 239);
-    border-radius: 8px;
-    overflow: hidden;
-`;
-
-const StyledGraphDiv = styled.div<{ $width: number; $index: number }>`
-    height: 100%;
-    background-color: ${({ $index }) => {
-        if ($index === 0) return BLUE;
-        if ($index === 1) return GREEN;
-        if ($index === 2) return RED;
-        if ($index === 3) return YELLOW;
-        if ($index === 4) return AQUA;
-    }};
-    width: ${({ $width }) => `${$width}%`};
-    transition: width 0.2s ease-in-out 0s;
-`;
-
-const StyledAnotBoxDiv = styled.div`
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-`;
-
-const StyledAnotBoxInnerDiv = styled.div`
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: rgb(85, 85, 85);
-`;
-
-const StyledAnotDiv = styled.div<{ $index: number }>`
-    width: 20px;
-    height: 10px;
-    background-color: ${({ $index }) => {
-        if ($index === 0) return BLUE;
-        if ($index === 1) return GREEN;
-        if ($index === 2) return RED;
-        if ($index === 3) return YELLOW;
-        if ($index === 4) return AQUA;
-    }};
-    margin-right: 8px;
-`;
+const colors = [
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-red-500",
+    "bg-yellow-500",
+    "bg-teal-500",
+];
 
 function Total() {
     const { monthlyExpends, month } = useLedger();
@@ -112,28 +50,36 @@ function Total() {
         });
 
     return (
-        <StyledSection>
+        <section className="box-border p-5 w-full rounded-sm text-center text-lg font-bold">
             {`${month}월 총 지출: ${reduced.total.toLocaleString("ko-KR")}원`}
-            <StyledGraphBoxDiv>
+            <div className="flex justify-center mt-5 h-10 rounded-lg overflow-hidden">
                 {graphArray.slice(1).map((percent, idx) => (
-                    <StyledGraphDiv
+                    <div
+                        className={clsx(
+                            "h-full transition-width duration-200 ease-in-out",
+                            colors[idx]
+                        )}
+                        style={{ width: `${percent}%` }}
                         key={percent}
-                        $width={percent}
-                        $index={idx}
-                    ></StyledGraphDiv>
+                    ></div>
                 ))}
-            </StyledGraphBoxDiv>
-            <StyledAnotBoxDiv>
+            </div>
+            <div className="mx-auto my-0 w-10/12 flex justify-center gap-5 flex-wrap">
                 {anotArray.map((anot, idx) => (
-                    <StyledAnotBoxInnerDiv key={idx}>
-                        <StyledAnotDiv $index={idx}></StyledAnotDiv>
+                    <div
+                        className="flex justify-center items-center text-sm text-gray-500"
+                        key={idx}
+                    >
+                        <div
+                            className={clsx("w-5 h-3 mr-2", colors[idx])}
+                        ></div>
                         {`${anot[0]}: ${anot[1].toLocaleString("ko-KR")} 원 (${
                             anot[2]
                         }%)`}
-                    </StyledAnotBoxInnerDiv>
+                    </div>
                 ))}
-            </StyledAnotBoxDiv>
-        </StyledSection>
+            </div>
+        </section>
     );
 }
 

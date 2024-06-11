@@ -1,25 +1,6 @@
 import useLedger from "@/hooks/useLedger";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
 import Card from "../Card";
-
-const StyledSection = styled.section`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 0.6rem;
-    width: 100%;
-    padding: 1rem 0;
-    height: auto;
-    background-color: white;
-    border-radius: 5px;
-`;
-
-const StyledLink = styled(Link)`
-    width: 100%;
-`;
 
 // Link의 state 기능 사용해서 디테일로 state(props) 처럼 전달
 function List() {
@@ -28,17 +9,18 @@ function List() {
     if (!monthlyExpends) return <></>;
 
     return (
-        <StyledSection>
+        <section className="flex flex-col justify-center items-center gap-3 w-full py-4 h-auto rounded-sm">
             {monthlyExpends.map((expend) => (
-                <StyledLink
+                <Link
+                    className="w-full"
                     key={expend.id}
                     to={`/detail/${expend.id}`}
                     state={{ expend }}
                 >
                     <Card expend={expend} />
-                </StyledLink>
+                </Link>
             ))}
-        </StyledSection>
+        </section>
     );
 }
 
