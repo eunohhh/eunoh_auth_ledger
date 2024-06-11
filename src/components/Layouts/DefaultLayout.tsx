@@ -11,7 +11,7 @@ function DefaultLayout() {
 
             <main
                 id="default-layout"
-                className="h-screen grid place-items-center"
+                className="h-full grid place-items-center"
             >
                 <Outlet />
             </main>

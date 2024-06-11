@@ -1,6 +1,8 @@
+import Detail from "@/components/Detail";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import SignIn from "@/components/SignIn";
 import SignUp from "@/components/SignUp";
+import LedgerPage from "@/components/pages/LedgerPage";
 import MyPage from "@/components/pages/MyPage";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
@@ -22,11 +24,15 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: "/ledger",
-                        element: <div>보이냐?</div>,
+                        element: <LedgerPage />,
                     },
                     {
                         path: "/mypage",
                         element: <MyPage />,
+                    },
+                    {
+                        path: "detail/:id",
+                        element: <Detail />,
                     },
                 ],
             },

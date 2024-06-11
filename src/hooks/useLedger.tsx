@@ -1,32 +1,17 @@
 import api from "@/api/api";
-import { Expend } from "@/types/d";
+import { Expend, Ledger } from "@/types/d";
 import { useLedgerStore } from "@/zustand/ledger.store";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-function useLedger() {
-    // const { expends, setExpends, addExpend, deleteExpend, updateExpend } =
-    //     useLedgerStore(
-    //         useShallow((state) => ({
-    //             expends: state.expends,
-    //             setExpends: state.setExpends,
-    //             addExpend: state.addExpend,
-    //             deleteExpend: state.deleteExpend,
-    //             updateExpend: state.updateExpend,
-    //         }))
-    //     );
-
+function useLedger(): Ledger {
     const { month, selectMonth } = useLedgerStore(
         useShallow((state) => ({
             month: state.month,
             selectMonth: state.selectMonth,
         }))
     );
-
-    // const { mutateAsync: getLedger } = useMutation<Expend[]>({
-    //     mutationFn: () => api.ledger.getLedger(),
-    // });
 
     const { mutateAsync: addExpend } = useMutation({
         mutationFn: (newExpends: Expend[]) => api.ledger.addLeger(newExpends),
@@ -39,7 +24,7 @@ function useLedger() {
         mutationFn: (expendId: string) => api.ledger.deleteLeger(expendId),
     });
 
-    const { data: expends, isLoading: expendsLoading } = useQuery({
+    const { data: expends = [], isLoading: expendsLoading } = useQuery({
         queryKey: ["ledger"],
         queryFn: () => api.ledger.getLedger(),
     });
@@ -68,23 +53,6 @@ function useLedger() {
         }
     }, [expends, month]);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const data = await getLedger();
-    //             setExpends(data);
-    //         } catch (error) {
-    //             console.error(
-    //                 "가계부기본 데이터를 불러오는데 실패했습니다",
-    //                 error
-    //             );
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, [setExpends]);
-
-    if (expendsLoading) return { expendsLoading };
     return {
         expends,
         month,

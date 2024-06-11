@@ -1,3 +1,5 @@
+import { UseMutateAsyncFunction } from "@tanstack/react-query";
+
 export interface AuthData {
     id?: string;
     password?: string;
@@ -38,12 +40,13 @@ export interface Expend {
 }
 
 export interface Ledger {
+    expendsLoading: boolean;
     expends: Expend[] | null;
     month: number;
     monthlyExpends: Expend[] | null;
-    setExpends: (expends: Expend[]) => void;
+    // setExpends: (expends: Expend[]) => void;
     selectMonth: (selectedMonth: number) => void;
-    addExpend: (newExpend: Expend) => void;
+    addExpend: UseMutateAsyncFunction<LedgerState, Error, Expend[], unknown>;
     deleteExpend: (expendId: string) => void;
     updateExpend: (newExpend: Expend) => void;
 }

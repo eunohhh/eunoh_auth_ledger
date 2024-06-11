@@ -1,4 +1,4 @@
-import useLedgerRedux from "@/hooks/useLedgerRedux";
+import useLedger from "@/hooks/useLedger";
 import isValidDate from "@/utils/isValidDate";
 import { ChangeEvent, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -78,7 +78,7 @@ const StyledButtonDiv = styled.div`
 `;
 
 function Detail() {
-    const { deleteExpend, updateExpend } = useLedgerRedux();
+    const { deleteExpend, updateExpend } = useLedger();
     // navigate 는 수정 삭제 돌아가기 시 홈으로 돌려보내기 위해
     // location 은 List 에서 쏴준 데이터 받기 위해
     // state는 제어 컴포넌트를 위해
@@ -91,7 +91,7 @@ function Detail() {
 
     const inputRef = useRef<(HTMLInputElement | HTMLSelectElement)[]>([]);
 
-    const handleUpdateClick = () => {
+    const handleUpdateClick = async () => {
         // useRef 를 사용하도록 수정
         const date = inputRef.current[0].value;
         const day = parseInt(date.split("-")[1], 10);
@@ -130,13 +130,15 @@ function Detail() {
             return;
         }
 
-        updateExpend(newExpend);
+        const result = await updateExpend(newExpend);
+
+        console.log(result);
         navigate("/");
     };
 
-    const handleDeleteClick = () => {
+    const handleDeleteClick = async () => {
         if (confirm("정말 삭제하실 겁니까?")) {
-            deleteExpend(expend.id);
+            await deleteExpend(expend.id);
             navigate("/");
         } else {
             return;
@@ -169,32 +171,32 @@ function Detail() {
                             ref={(ele) => ele && inputRef.current.push(ele)}
                         >
                             <option
-                                value={"주거"}
-                                selected={inputValues[2][1] === "주거"}
+                                defaultValue={"주거"}
+                                // selected={inputValues[2][1] === "주거"}
                             >
                                 주거
                             </option>
                             <option
                                 value={"식비"}
-                                selected={inputValues[2][1] === "식비"}
+                                // selected={inputValues[2][1] === "식비"}
                             >
                                 식비
                             </option>
                             <option
                                 value={"의류"}
-                                selected={inputValues[2][1] === "의류"}
+                                // selected={inputValues[2][1] === "의류"}
                             >
                                 의류
                             </option>
                             <option
                                 value={"여가"}
-                                selected={inputValues[2][1] === "여가"}
+                                // selected={inputValues[2][1] === "여가"}
                             >
                                 여가
                             </option>
                             <option
                                 value={"기타"}
-                                selected={inputValues[2][1] === "기타"}
+                                // selected={inputValues[2][1] === "기타"}
                             >
                                 기타
                             </option>

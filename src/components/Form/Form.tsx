@@ -1,67 +1,7 @@
 import useLedger from "@/hooks/useLedger";
-import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import isValidDate from "../../utils/isValidDate";
 import Input from "./Input";
-
-const InputSection = styled.section`
-    width: 100%;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 8vh;
-    background-color: white;
-    color: rgb(79, 79, 79);
-    border-radius: 5px;
-    box-sizing: border-box;
-    padding: 1rem;
-`;
-
-const SubmitForm = styled.form`
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`;
-
-const StyledDiv = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    width: 10%;
-    height: 100%;
-
-    & > button {
-        background: var(--button-bg-color);
-        color: var(--button-color);
-        margin: 0;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        font-weight: 400;
-        text-align: center;
-        text-decoration: none;
-        border: none;
-        border-radius: 4px;
-        display: inline-block;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        cursor: pointer;
-        transition: 0.5s;
-    }
-    button:active,
-    button:hover,
-    button:focus {
-        background: var(--button-hover-bg-color);
-        outline: 0;
-    }
-    button:disabled {
-        opacity: 0.5;
-    }
-`;
 
 function Form() {
     const { expends, addExpend } = useLedger();
@@ -124,14 +64,22 @@ function Form() {
     };
 
     return (
-        <InputSection>
-            <SubmitForm onSubmit={handleSubmit}>
+        <section className="w-full flex justify-center items-center h-20 bg-white text-neutral-900 box-border p-3">
+            <form
+                className="w-full h-full flex flex-row justify-between"
+                onSubmit={handleSubmit}
+            >
                 <Input />
-                <StyledDiv>
-                    <button type="submit">저장</button>
-                </StyledDiv>
-            </SubmitForm>
-        </InputSection>
+                <div className="h-full w-1/12 flex justify-center items-end">
+                    <button
+                        className="bg-sky-400 m-0 px-4 py-2 rounded-md transition shadow-lg shadow-blue-500/50 text-white hover:bg-sky-500"
+                        type="submit"
+                    >
+                        저장
+                    </button>
+                </div>
+            </form>
+        </section>
     );
 }
 
