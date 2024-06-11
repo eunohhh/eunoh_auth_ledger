@@ -51,4 +51,5 @@ export interface Ledger {
 export interface LedgerState {
     expends: Expend[];
     month: number;
+    monthlyExpends: Expend[];
 }

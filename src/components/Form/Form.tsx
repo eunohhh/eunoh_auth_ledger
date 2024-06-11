@@ -1,4 +1,4 @@
-import useLedgerRedux from "@/hooks/useLedgerRedux";
+import useLedger from "@/hooks/useLedger";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import isValidDate from "../../utils/isValidDate";
@@ -64,11 +64,11 @@ const StyledDiv = styled.div`
 `;
 
 function Form() {
-    const { addExpend } = useLedgerRedux();
+    const { expends, addExpend } = useLedger();
     // 폼 서브밋 핸들러
     // 인풋핸들러에서 설정된 가계부 객체를 전체 가계부 배열에 추가
     // 여기서는 비제어 컴포넌트를 사용
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const form = e.target as HTMLFormElement;
@@ -102,7 +102,7 @@ function Form() {
             return;
         }
 
-        const newLedger = {
+        const newExpend = {
             id: uuidv4(),
             date,
             item,
@@ -110,10 +110,14 @@ function Form() {
             description,
         };
 
-        console.log(newLedger);
+        if (!expends) return;
+
+        const newExpends = [...expends, newExpend];
         // dispatch(addToDo(newTodo));
 
-        addExpend(newLedger);
+        const result = await addExpend(newExpends);
+
+        console.log(result);
 
         // 추가하고 나면 폼 리셋 시키기!!
         form.reset();

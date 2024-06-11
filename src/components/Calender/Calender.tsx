@@ -1,4 +1,4 @@
-import useLedgerRedux from "@/hooks/useLedgerRedux";
+import useLedger from "@/hooks/useLedger";
 import styled from "styled-components";
 
 const StyledSection = styled.section`
@@ -35,8 +35,9 @@ const StyledDiv = styled.div<{ $selected: number; $curr: number }>`
 const calenderArray = Array.from({ length: 12 }, (_, i) => i + 1);
 
 function Calender() {
-    const { selectMonth, month } = useLedgerRedux();
+    const { selectMonth, month } = useLedger();
 
+    if (!month) return <></>;
     return (
         <StyledSection>
             {calenderArray.map((calender, idx) => (
@@ -44,7 +45,7 @@ function Calender() {
                     key={idx}
                     id={String(calender)}
                     onClick={() => selectMonth(calender)}
-                    $selected={month}
+                    $selected={month && month}
                     $curr={calender}
                 >{`${calender}월`}</StyledDiv>
             ))}

@@ -1,4 +1,4 @@
-import useLedgerRedux from "@/hooks/useLedgerRedux";
+import useLedger from "@/hooks/useLedger";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Card from "../Card";
@@ -23,7 +23,9 @@ const StyledLink = styled(Link)`
 
 // Link의 state 기능 사용해서 디테일로 state(props) 처럼 전달
 function List() {
-    const { monthlyExpends } = useLedgerRedux();
+    const { monthlyExpends } = useLedger();
+
+    if (!monthlyExpends) return <></>;
 
     return (
         <StyledSection>

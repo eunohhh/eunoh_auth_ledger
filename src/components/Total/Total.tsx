@@ -1,4 +1,4 @@
-import useLedgerRedux from "@/hooks/useLedgerRedux";
+import useLedger from "@/hooks/useLedger";
 import styled from "styled-components";
 
 const BLUE = `rgb(0, 123, 255)`;
@@ -72,7 +72,9 @@ const StyledAnotDiv = styled.div<{ $index: number }>`
 `;
 
 function Total() {
-    const { monthlyExpends, month } = useLedgerRedux();
+    const { monthlyExpends, month } = useLedger();
+
+    if (!monthlyExpends) return <></>;
 
     // 그래프를 위해 월별 지출 배열을 가공하여
     // {total : number, "item" : number, ...} 구조의 객체로 변환
