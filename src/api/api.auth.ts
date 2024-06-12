@@ -1,4 +1,4 @@
-import { AuthData, AxiosReturn } from "@/types/d";
+import { AuthData, AxiosReturn, CustomErrorResponse } from "@/types/d";
 import { useAuthStore } from "@/zustand/auth.store";
 import { Axios, AxiosError, AxiosResponse } from "axios";
 class AuthAPI {
@@ -68,9 +68,9 @@ class AuthAPI {
             throw new Error("An unexpected error occurred");
         }
     }
-    public async getUser(
-        accessToken: string | null
-    ): Promise<AxiosReturn | null> {
+    public async getUser(accessToken: string | null): Promise<AxiosReturn> {
+        if (accessToken === null) throw new Error("엑세스 토큰 없음");
+
         const path = "/user";
         // accessToken 한번더 처리 => accessToken 있으면 사용 없으면 this.token 있는지 체크해서 사용 혹은 ""
         this.axios.defaults.headers.common.Authorization = accessToken
@@ -78,8 +78,6 @@ class AuthAPI {
             : this.token
             ? `Bearer ${this.token}`
             : "";
-
-        if (accessToken === null) throw new Error("로그아웃 됨");
 
         try {
             const response: AxiosResponse<AxiosReturn> =
@@ -89,14 +87,15 @@ class AuthAPI {
             return result;
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
+                const axiosError = error as AxiosError<CustomErrorResponse>;
                 if (
                     error.response?.data.message ===
                     "토큰이 만료되었습니다. 다시 로그인 해주세요."
                 ) {
-                    console.log(error.response?.data.message);
+                    console.log(axiosError.response?.data.message);
                 } else {
                     throw new Error(
-                        error.response?.data.message || error.message
+                        axiosError.response?.data.message || error.message
                     );
                 }
             }

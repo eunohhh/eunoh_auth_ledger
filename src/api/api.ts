@@ -22,7 +22,7 @@ export class API {
         this.auth = new AuthAPI(this.authAxios);
         this.ledger = new LedgerAPI(this.ledgerAxios);
 
-        this.auth.initializeUser();
+        // this.auth.initializeUser();
     }
 }
 

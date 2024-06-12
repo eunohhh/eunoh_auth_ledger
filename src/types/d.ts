@@ -57,3 +57,7 @@ export interface LedgerState {
     month: number;
     monthlyExpends: Expend[];
 }
+
+export interface CustomErrorResponse {
+    message: string;
+}
