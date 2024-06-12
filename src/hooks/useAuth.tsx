@@ -33,13 +33,19 @@ function useAuth() {
 
     useEffect(() => {
         if (userData) {
-            if (userData && userData.id && userData.nickname) {
-                setUser({
-                    userId: userData.id,
-                    avatar: userData.avatar ? userData.avatar : null,
-                    nickname: userData.nickname,
-                });
-                setLoggedIn(true);
+            try {
+                if (userData && userData.id && userData.nickname) {
+                    setUser({
+                        userId: userData.id,
+                        avatar: userData.avatar ? userData.avatar : null,
+                        nickname: userData.nickname,
+                    });
+                    setLoggedIn(true);
+                } else {
+                    console.log("토큰 만료, 다시 로그인 하세요");
+                }
+            } catch (error) {
+                console.log("유저 데이터 가져오기 실패 => ", error);
             }
         }
     }, [userData, setUser, setLoggedIn]);
@@ -50,6 +56,9 @@ function useAuth() {
 
     const { mutateAsync: logIn } = useMutation({
         mutationFn: (data: AuthData) => api.auth.logIn(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user"] });
+        },
     });
 
     const { mutateAsync: getUser } = useMutation({

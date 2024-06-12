@@ -22,7 +22,7 @@ class AuthAPI {
                 });
                 useAuthStore.getState().setLoggedIn(true);
             } else {
-                console.log("첫 접속, 토큰 만료, 다시 로그인 하세요");
+                console.log("토큰 만료, 다시 로그인 하세요");
             }
         } catch (error) {
             console.log("유저 데이터 가져오기 실패 => ", error);
@@ -54,10 +54,7 @@ class AuthAPI {
 
             if (result.success && result.accessToken) {
                 localStorage.setItem("accessToken", result.accessToken);
-                if (result.success) {
-                    localStorage.setItem("accessToken", result.accessToken);
-                    await this.initializeUser(result.accessToken);
-                }
+                // await this.initializeUser(result.accessToken);
             }
 
             return result;
