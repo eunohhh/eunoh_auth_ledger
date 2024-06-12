@@ -1,4 +1,4 @@
-import { Expend } from "../../types/d";
+import { Expend } from "@/types/d";
 
 function Card({ expend }: { expend: Expend }) {
     return (
