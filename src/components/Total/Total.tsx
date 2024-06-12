@@ -1,5 +1,6 @@
 import useLedger from "@/hooks/useLedger";
 import clsx from "clsx";
+import Loader from "../Loaders/Loader";
 
 const colors = [
     "bg-blue-500",
@@ -10,15 +11,20 @@ const colors = [
 ];
 
 function Total() {
-    const { monthlyExpends, month } = useLedger();
+    const { monthlyExpends, month, expendsLoading } = useLedger();
 
-    if (!monthlyExpends) return <></>;
+    if (expendsLoading || !monthlyExpends)
+        return (
+            <div className="h-44 w-full flex justify-center items-center">
+                <Loader />
+            </div>
+        );
 
     // 그래프를 위해 월별 지출 배열을 가공하여
     // {total : number, "item" : number, ...} 구조의 객체로 변환
     const reduced = monthlyExpends.reduce(
         (acc: { [key: string]: number; total: number }, cur) => {
-            // 순환중 프로퍼티가 없으면 0 으로
+            // 순회중 프로퍼티가 없으면 0 으로
             if (!acc[cur.item]) acc[cur.item] = 0;
             // 있으면 각 프로퍼티에 더하고, total 에도 더하고
             acc[cur.item] += cur.amount;
@@ -50,7 +56,7 @@ function Total() {
         });
 
     return (
-        <section className="box-border p-5 w-full rounded-sm text-center text-lg font-bold">
+        <section className="box-border p-5 w-full rounded-sm text-center text-lg font-bold min-h-[144px]">
             {`${month}월 총 지출: ${reduced.total.toLocaleString("ko-KR")}원`}
             <div className="flex justify-center mt-5 h-10 rounded-lg overflow-hidden">
                 {graphArray.slice(1).map((percent, idx) => (
@@ -64,10 +70,10 @@ function Total() {
                     ></div>
                 ))}
             </div>
-            <div className="mx-auto my-0 w-10/12 flex justify-center gap-5 flex-wrap">
+            <div className="mx-auto my-0 w-10/12 flex justify-center gap-4 flex-wrap">
                 {anotArray.map((anot, idx) => (
                     <div
-                        className="flex justify-center items-center text-sm text-gray-500"
+                        className="flex justify-center items-center text-xs text-gray-500"
                         key={idx}
                     >
                         <div

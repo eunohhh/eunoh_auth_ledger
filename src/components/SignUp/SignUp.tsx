@@ -116,74 +116,84 @@ function SignUp() {
     const handleLogInClick = () => navigate("/");
 
     return (
-        <div className="grid grid-cols-1 gap-y-6">
-            <h1 className="text-2xl font-semibold text-center">회원가입</h1>
-            <div className="flex flex-col gap-y-4">
-                <div className="flex flex-col gap-y-1.5 items-start">
-                    <label htmlFor={idId} className="text-sm font-medium">
-                        {"아이디"}
-                    </label>
-                    <input
-                        id={idId}
-                        className="border px-4 py-2.5 rounded-md w-80"
-                        type="text"
-                        value={input.id}
-                        onChange={handleInputChange}
-                    ></input>
+        <section className="grid grid-cols-1 gap-y-6 h-dvh">
+            <div className="h-fit top-1/2 -translate-y-1/2 relative flex gap-4 flex-col">
+                <h1 className="text-2xl font-semibold text-center">회원가입</h1>
+                <div className="flex flex-col gap-y-4">
+                    <div className="flex flex-col gap-y-1.5 items-start">
+                        <label htmlFor={idId} className="text-sm font-medium">
+                            {"아이디"}
+                        </label>
+                        <input
+                            id={idId}
+                            className="border px-4 py-2.5 rounded-md w-80"
+                            type="text"
+                            value={input.id}
+                            onChange={handleInputChange}
+                        ></input>
+                    </div>
+                    <div className="flex flex-col gap-y-1.5 items-start">
+                        <label
+                            htmlFor={passwordId}
+                            className="text-sm font-medium"
+                        >
+                            {"비밀번호"}
+                        </label>
+                        <input
+                            id={passwordId}
+                            className="border px-4 py-2.5 rounded-md w-80"
+                            type="password"
+                            value={input.password}
+                            onChange={handleInputChange}
+                        ></input>
+                    </div>
+                    <div className="flex flex-col gap-y-1.5 items-start">
+                        <label
+                            htmlFor={passwordConfirmId}
+                            className="text-sm font-medium"
+                        >
+                            {"비밀번호 확인"}
+                        </label>
+                        <input
+                            id={passwordConfirmId}
+                            className="border px-4 py-2.5 rounded-md w-80"
+                            type="password"
+                            value={input.passwordConfirm}
+                            onChange={handleInputChange}
+                        ></input>
+                    </div>
+                    <div className="flex flex-col gap-y-1.5 items-start">
+                        <label
+                            htmlFor={nicknameId}
+                            className="text-sm font-medium"
+                        >
+                            {"닉네임"}
+                        </label>
+                        <input
+                            id={nicknameId}
+                            className="border px-4 py-2.5 rounded-md w-80"
+                            type="text"
+                            value={input.nickName}
+                            onChange={handleInputChange}
+                        ></input>
+                    </div>
                 </div>
-                <div className="flex flex-col gap-y-1.5 items-start">
-                    <label htmlFor={passwordId} className="text-sm font-medium">
-                        {"비밀번호"}
-                    </label>
-                    <input
-                        id={passwordId}
-                        className="border px-4 py-2.5 rounded-md w-80"
-                        type="password"
-                        value={input.password}
-                        onChange={handleInputChange}
-                    ></input>
-                </div>
-                <div className="flex flex-col gap-y-1.5 items-start">
-                    <label
-                        htmlFor={passwordConfirmId}
-                        className="text-sm font-medium"
+                <div className="flex flex-col justify-center items-center w-full gap-4">
+                    <button
+                        onClick={handleSignUpClick}
+                        className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70 w-full"
                     >
-                        {"비밀번호 확인"}
-                    </label>
-                    <input
-                        id={passwordConfirmId}
-                        className="border px-4 py-2.5 rounded-md w-80"
-                        type="password"
-                        value={input.passwordConfirm}
-                        onChange={handleInputChange}
-                    ></input>
-                </div>
-                <div className="flex flex-col gap-y-1.5 items-start">
-                    <label htmlFor={nicknameId} className="text-sm font-medium">
-                        {"닉네임"}
-                    </label>
-                    <input
-                        id={nicknameId}
-                        className="border px-4 py-2.5 rounded-md w-80"
-                        type="text"
-                        value={input.nickName}
-                        onChange={handleInputChange}
-                    ></input>
+                        회원가입
+                    </button>
+                    <button
+                        onClick={handleLogInClick}
+                        className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70 w-full"
+                    >
+                        로그인하러가기
+                    </button>
                 </div>
             </div>
-            <button
-                onClick={handleSignUpClick}
-                className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70"
-            >
-                회원가입
-            </button>
-            <button
-                onClick={handleLogInClick}
-                className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70"
-            >
-                로그인하러가기
-            </button>
-        </div>
+        </section>
     );
 }
 

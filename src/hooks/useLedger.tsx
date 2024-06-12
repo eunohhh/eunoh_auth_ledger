@@ -4,9 +4,11 @@ import { useLedgerStore } from "@/zustand/ledger.store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
+import useAuth from "./useAuth";
 
 function useLedger(): Ledger {
     const queryClient = useQueryClient();
+    const { user } = useAuth();
     const { month, selectMonth } = useLedgerStore(
         useShallow((state) => ({
             month: state.month,
@@ -17,6 +19,7 @@ function useLedger(): Ledger {
     const { data: expends = [], isLoading: expendsLoading } = useQuery({
         queryKey: ["ledger"],
         queryFn: () => api.ledger.getLedger(),
+        staleTime: Infinity,
     });
 
     const { mutateAsync: addExpend } = useMutation({
@@ -47,6 +50,7 @@ function useLedger(): Ledger {
                     const _month = parseInt(dateStr.split("-")[1], 10);
                     return _month === month;
                 })
+                .filter((expend) => expend.created_by === user?.userId)
                 .map((expend) => ({
                     ...expend,
                     day: parseInt(expend.date.split("-")[2], 10),
@@ -61,7 +65,7 @@ function useLedger(): Ledger {
         } else {
             return [];
         }
-    }, [expends, month]);
+    }, [expends, month, user?.userId]);
 
     return {
         expends,

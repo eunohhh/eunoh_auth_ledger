@@ -38,7 +38,7 @@ function Detail() {
             amount,
             description,
             day,
-            created_by: user.nickname,
+            created_by: user.userId,
         };
 
         if (!date || !item || !amount || !description) return;

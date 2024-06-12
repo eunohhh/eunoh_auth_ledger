@@ -1,21 +1,35 @@
 import { AuthData, AxiosReturn } from "@/types/d";
+import { useAuthStore } from "@/zustand/auth.store";
 import { Axios, AxiosError, AxiosResponse } from "axios";
-import { API } from "./api";
-
 class AuthAPI {
     private axios: Axios;
-    private api: API;
     private token: string | null;
 
-    constructor(axios: Axios, api: API) {
+    constructor(axios: Axios) {
         const accessToken: string | null = localStorage.getItem("accessToken");
 
         this.axios = axios;
-        this.api = api;
         this.token = accessToken;
     }
+    public async initializeUser(accessToken: string | null = this.token) {
+        try {
+            const user = await this.getUser(accessToken);
+            if (user && user.id && user.nickname) {
+                useAuthStore.getState().setUser({
+                    userId: user.id,
+                    avatar: user.avatar ? user.avatar : null,
+                    nickname: user.nickname,
+                });
+                useAuthStore.getState().setLoggedIn(true);
+            } else {
+                console.log("첫 접속, 토큰 만료, 다시 로그인 하세요");
+            }
+        } catch (error) {
+            console.log("유저 데이터 가져오기 실패 => ", error);
+        }
+    }
 
-    async signUp(data: AuthData): Promise<AxiosReturn> {
+    public async signUp(data: AuthData): Promise<AxiosReturn> {
         try {
             const path = "/register";
 
@@ -30,7 +44,7 @@ class AuthAPI {
             throw new Error("An unexpected error occurred");
         }
     }
-    async logIn(data: AuthData): Promise<AxiosReturn> {
+    public async logIn(data: AuthData): Promise<AxiosReturn> {
         const path = "/login?expiresIn=30m";
 
         try {
@@ -42,7 +56,7 @@ class AuthAPI {
                 localStorage.setItem("accessToken", result.accessToken);
                 if (result.success) {
                     localStorage.setItem("accessToken", result.accessToken);
-                    await this.api.initializeUser(result.accessToken);
+                    await this.initializeUser(result.accessToken);
                 }
             }
 
@@ -54,15 +68,18 @@ class AuthAPI {
             throw new Error("An unexpected error occurred");
         }
     }
-    async getUser(
-        accessToken: string | null = null
+    public async getUser(
+        accessToken: string | null
     ): Promise<AxiosReturn | null> {
         const path = "/user";
+        // accessToken 한번더 처리 => accessToken 있으면 사용 없으면 this.token 있는지 체크해서 사용 혹은 ""
         this.axios.defaults.headers.common.Authorization = accessToken
             ? `Bearer ${accessToken}`
             : this.token
             ? `Bearer ${this.token}`
             : "";
+
+        if (accessToken === null) throw new Error("로그아웃 됨");
 
         try {
             const response: AxiosResponse<AxiosReturn> =
@@ -83,10 +100,10 @@ class AuthAPI {
                     );
                 }
             }
-            throw new Error("An unexpected error occurred");
+            throw new Error("알수 없는 오류 발생!");
         }
     }
-    async changeProfile(
+    public async changeProfile(
         accessToken: string | null = null,
         data: AuthData
     ): Promise<AxiosReturn> {

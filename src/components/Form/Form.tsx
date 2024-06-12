@@ -64,7 +64,7 @@ function Form() {
             item,
             amount: Number(amount),
             description,
-            created_by: user.nickname,
+            created_by: user.userId,
         };
 
         try {

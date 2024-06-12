@@ -102,8 +102,11 @@ function Profile() {
     }, [imgFile]);
 
     return (
-        <section className="w-full flex justify-center items-center">
-            <form onSubmit={handleFormSubmit} className="flex flex-row gap-4">
+        <section className="w-full flex justify-center items-center h-[calc(100dvh-4rem)]">
+            <form
+                onSubmit={handleFormSubmit}
+                className="flex flex-row gap-4 h-fit relative"
+            >
                 <div className="flex flex-col gap-3">
                     <div className="w-28 h-28 rounded-full overflow-hidden">
                         <img

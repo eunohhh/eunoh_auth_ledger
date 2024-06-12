@@ -1,3 +1,4 @@
+// import api from "@/api/api";
 import Detail from "@/components/Detail";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import SignIn from "@/components/SignIn";
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
                     {
                         path: "/ledger",
                         element: <LedgerPage />,
+                        // loader: () => api.ledger.getLedger(),
                     },
                     {
                         path: "/mypage",
