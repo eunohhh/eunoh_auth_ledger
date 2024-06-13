@@ -1,4 +1,5 @@
 import useAuth from "@/hooks/useAuth";
+import useLedger from "@/hooks/useLedger";
 import { FormEvent, useEffect, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -9,6 +10,7 @@ function SignIn() {
     const passwordId = useId();
 
     const { isLoggedIn, logIn } = useAuth();
+    const { expendsLoading } = useLedger();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -66,6 +68,14 @@ function SignIn() {
             navigate("/ledger");
         }
     }, [isLoggedIn, navigate]);
+
+    useEffect(() => {
+        if (expendsLoading) {
+            console.log("데이터 사전 로딩중");
+        } else {
+            console.log("데이터 사전 로딩 완료");
+        }
+    }, [expendsLoading]);
 
     return (
         <section className="grid grid-cols-1 gap-y-6 h-dvh">
