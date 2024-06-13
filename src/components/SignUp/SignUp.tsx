@@ -1,5 +1,5 @@
 import useAuth from "@/hooks/useAuth";
-import { ChangeEvent, useId, useState } from "react";
+import { FormEvent, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -12,77 +12,66 @@ function SignUp() {
 
     const { signUp } = useAuth();
 
-    const [input, setInput] = useState({
-        id: "",
-        password: "",
-        passwordConfirm: "",
-        nickName: "",
-    });
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const id = e.target.id;
-        const value = e.target.value;
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const id = formData.get("id")?.toString();
+        const password = formData.get("password")?.toString();
+        const passwordConfirm = formData.get("passwordConfirm")?.toString();
+        const nickName = formData.get("nickname")?.toString();
 
-        if (/\s/.test(value)) {
-            return Swal.fire({
-                title: "에러",
-                text: "공백을 포함할 수 없습니다!",
-                icon: "error",
-            });
-            return; // 공백이 포함된 경우 상태 업데이트 안함
-        }
-
-        switch (id) {
-            case idId:
-                setInput({ ...input, id: value });
-                break;
-            case passwordId:
-                setInput({ ...input, password: value });
-                break;
-            case nicknameId:
-                setInput({ ...input, nickName: value });
-                break;
-            case passwordConfirmId:
-                setInput({ ...input, passwordConfirm: value });
-                break;
-        }
-    };
-
-    const handleSignUpClick = async () => {
-        if (
-            !input.id ||
-            !input.password ||
-            !input.passwordConfirm ||
-            !input.nickName
-        )
+        if (!id || !password || !passwordConfirm || !nickName) {
             return Swal.fire({
                 title: "에러",
                 text: "빈 값이 없도록 해주세요",
                 icon: "error",
             });
+        }
 
-        if (input.id.length < 4 || input.id.length > 10) {
+        const validateInputs = (inputs: string[]) => {
+            const hasWhitespace = inputs.some((input) => /\s/.test(input));
+            return hasWhitespace;
+        };
+
+        const hasWhiteSpace = validateInputs([
+            id,
+            password,
+            passwordConfirm,
+            nickName,
+        ]);
+
+        if (hasWhiteSpace) {
+            return Swal.fire({
+                title: "에러",
+                text: "공백을 포함할 수 없습니다!",
+                icon: "error",
+            });
+        }
+
+        if (id.length < 4 || id.length > 10) {
             return Swal.fire({
                 title: "에러",
                 text: "아이디는 4~10 글자로 해야합니다!",
                 icon: "error",
             });
         }
-        if (input.password.length < 4 || input.password.length > 15) {
+        if (password.length < 4 || password.length > 15) {
             return Swal.fire({
                 title: "에러",
                 text: "비밀번호는 4~15 글자로 해야합니다!",
                 icon: "error",
             });
         }
-        if (input.nickName.length < 1 || input.nickName.length > 10) {
+        if (nickName.length < 1 || nickName.length > 10) {
             return Swal.fire({
                 title: "에러",
                 text: "닉네임은 1~10 글자로 해야합니다!",
                 icon: "error",
             });
         }
-        if (input.password !== input.passwordConfirm) {
+        if (password !== passwordConfirm) {
             return Swal.fire({
                 title: "에러",
                 text: "비밀번호가 일치하지 않습니다.",
@@ -90,9 +79,9 @@ function SignUp() {
             });
         }
         const data = {
-            id: input.id,
-            password: input.password,
-            nickname: input.nickName,
+            id: id,
+            password: password,
+            nickname: nickName,
         };
 
         try {
@@ -117,7 +106,10 @@ function SignUp() {
 
     return (
         <section className="grid grid-cols-1 gap-y-6 h-dvh">
-            <div className="h-fit top-1/2 -translate-y-1/2 relative flex gap-4 flex-col">
+            <form
+                onSubmit={handleSubmit}
+                className="h-fit top-1/2 -translate-y-1/2 relative flex gap-4 flex-col"
+            >
                 <h1 className="text-2xl font-semibold text-center">회원가입</h1>
                 <div className="flex flex-col gap-y-4">
                     <div className="flex flex-col gap-y-1.5 items-start">
@@ -128,8 +120,7 @@ function SignUp() {
                             id={idId}
                             className="border px-4 py-2.5 rounded-md w-80"
                             type="text"
-                            value={input.id}
-                            onChange={handleInputChange}
+                            name="id"
                         ></input>
                     </div>
                     <div className="flex flex-col gap-y-1.5 items-start">
@@ -143,8 +134,7 @@ function SignUp() {
                             id={passwordId}
                             className="border px-4 py-2.5 rounded-md w-80"
                             type="password"
-                            value={input.password}
-                            onChange={handleInputChange}
+                            name="password"
                         ></input>
                     </div>
                     <div className="flex flex-col gap-y-1.5 items-start">
@@ -158,8 +148,7 @@ function SignUp() {
                             id={passwordConfirmId}
                             className="border px-4 py-2.5 rounded-md w-80"
                             type="password"
-                            value={input.passwordConfirm}
-                            onChange={handleInputChange}
+                            name="passwordConfirm"
                         ></input>
                     </div>
                     <div className="flex flex-col gap-y-1.5 items-start">
@@ -173,26 +162,26 @@ function SignUp() {
                             id={nicknameId}
                             className="border px-4 py-2.5 rounded-md w-80"
                             type="text"
-                            value={input.nickName}
-                            onChange={handleInputChange}
+                            name="nickname"
                         ></input>
                     </div>
                 </div>
                 <div className="flex flex-col justify-center items-center w-full gap-4">
                     <button
-                        onClick={handleSignUpClick}
+                        type="submit"
                         className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70 w-full"
                     >
                         회원가입
                     </button>
                     <button
+                        type="button"
                         onClick={handleLogInClick}
                         className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70 w-full"
                     >
                         로그인하러가기
                     </button>
                 </div>
-            </div>
+            </form>
         </section>
     );
 }

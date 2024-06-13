@@ -1,5 +1,5 @@
 import useAuth from "@/hooks/useAuth";
-import { ChangeEvent, useEffect, useId, useState } from "react";
+import { FormEvent, useEffect, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -10,29 +10,32 @@ function SignIn() {
 
     const { isLoggedIn, logIn } = useAuth();
 
-    const [input, setInput] = useState({
-        id: "",
-        password: "",
-    });
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const id = e.target.id;
-        const value = e.target.value;
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+        const id = formData.get("id")?.toString();
+        const pw = formData.get("password")?.toString();
 
-        switch (id) {
-            case idId:
-                setInput({ ...input, id: value });
-                break;
-            case passwordId:
-                setInput({ ...input, password: value });
-                break;
+        if (!id || !pw)
+            return Swal.fire({
+                title: "에러",
+                text: "빈 값이 없도록 해주세요",
+                icon: "error",
+            });
+
+        if (/\s/.test(id) || /\s/.test(pw)) {
+            return Swal.fire({
+                title: "에러",
+                text: "공백을 포함할 수 없습니다!",
+                icon: "error",
+            });
         }
-    };
 
-    const handleLogInClick = async () => {
         const data = {
-            id: input.id,
-            password: input.password,
+            id: id,
+            password: pw,
         };
 
         try {
@@ -66,7 +69,10 @@ function SignIn() {
 
     return (
         <section className="grid grid-cols-1 gap-y-6 h-dvh">
-            <div className="h-fit top-1/2 -translate-y-1/2 relative flex gap-4 flex-col">
+            <form
+                onSubmit={handleSubmit}
+                className="h-fit top-1/2 -translate-y-1/2 relative flex gap-4 flex-col"
+            >
                 <h1 className="text-2xl font-semibold text-center">로그인</h1>
                 <div className="flex flex-col gap-y-4">
                     <div className="flex flex-col gap-y-1.5 items-start">
@@ -75,10 +81,9 @@ function SignIn() {
                         </label>
                         <input
                             id={idId}
+                            name="id"
                             className="border px-4 py-2.5 rounded-md w-80"
                             type="text"
-                            value={input.id}
-                            onChange={handleInputChange}
                         ></input>
                     </div>
                     <div className="flex flex-col gap-y-1.5 items-start">
@@ -91,25 +96,25 @@ function SignIn() {
                         <input
                             id={passwordId}
                             className="border px-4 py-2.5 rounded-md w-80"
+                            name="password"
                             type="password"
-                            value={input.password}
-                            onChange={handleInputChange}
                         ></input>
                     </div>
                 </div>
                 <button
-                    onClick={handleLogInClick}
+                    type="submit"
                     className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70"
                 >
                     로그인
                 </button>
                 <button
+                    type="button"
                     onClick={handleSignUpClick}
                     className="bg-black text-white py-3 text-[15px] rounded-md font-medium hover:bg-black/80 transition active:bg-black/70"
                 >
                     회원가입
                 </button>
-            </div>
+            </form>
         </section>
     );
 }
