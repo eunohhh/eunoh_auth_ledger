@@ -17,7 +17,7 @@ function Header() {
 
     return (
         <header className="h-16">
-            <nav className="h-full bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-600">
+            <nav className="h-full border-gray-200 px-4 lg:px-6 py-2.5 bg-gray-600">
                 <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
                     <div className="flex cursor-pointer">
                         <img
@@ -27,7 +27,7 @@ function Header() {
                         />
                         <span
                             onClick={handleHomeClick}
-                            className="self-center text-xl font-semibold whitespace-nowrap dark:text-white cu"
+                            className="self-center text-xl font-semibold whitespace-nowrap text-white cursor-pointer"
                         >
                             인증기능이 있는 가계부
                         </span>
